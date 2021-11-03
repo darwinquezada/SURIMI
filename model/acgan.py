@@ -1,4 +1,4 @@
-# example of training an conditional gan on the fashion mnist dataset
+
 import numpy as np
 import os
 from numpy import expand_dims
@@ -82,7 +82,7 @@ def define_generator(X_train=None, y_train=None):
     li = Dense(n_nodes)(li)
     # reshape to additional channel
     li = Reshape((features, 1))(li)
-    # image generator input
+    # dataset generator input
     in_lat = Input(shape=(latent_dim,))
 
     n_nodes = 1 * features
@@ -90,7 +90,7 @@ def define_generator(X_train=None, y_train=None):
     gen = Dense(n_nodes)(in_lat)
     gen = LeakyReLU(alpha=0.2)(gen)
     gen = Reshape((features, 1))(gen)
-    # merge image gen and label input
+    # merge dataset gen and label input
     merge = Concatenate()([gen, li])
     gen = Conv1DTranspose(32, 4, padding='same')(merge)
     gen = LeakyReLU(alpha=0.2)(gen)
@@ -140,10 +140,10 @@ def generate_fake_samples(generator, latent_dim, n_samples, n_classes=1):
     # generate points in latent space
     z_input, labels_input = generate_latent_points(latent_dim, n_samples, n_classes)
     # predict outputs
-    images = generator.predict([z_input, labels_input])
+    datasets = generator.predict([z_input, labels_input])
     # create class labels
     y = zeros((n_samples, 1))
-    return [images, labels_input], y
+    return [datasets, labels_input], y
 
 
 def data_selection(X_train=None, y_train=None, num_samples=10):

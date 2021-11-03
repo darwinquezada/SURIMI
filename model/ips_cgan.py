@@ -1,4 +1,3 @@
-# example of training an conditional gan on the fashion mnist dataset
 import numpy as np
 import os
 from numpy import expand_dims

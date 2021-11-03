@@ -1,4 +1,4 @@
-# example of training an conditional gan on the fashion mnist dataset
+
 import numpy as np
 import os
 from numpy import expand_dims
@@ -52,7 +52,7 @@ def define_discriminator(X_train=None, y_train=None, discriminator_config=None):
 
     # embedding for categorical input
     li = Embedding(n_classes, 50)(in_label)
-    # scale up to image dimensions with linear activation
+    # scale up to dataset dimensions with linear activation
     n_nodes = in_shape[0] * in_shape[1]
     li = Dense(n_nodes)(li)
     # reshape to additional channel
@@ -102,7 +102,7 @@ def define_generator(X_train=None, y_train=None):
     li = Dense(n_nodes)(li)
     # reshape to additional channel
     li = Reshape((features, 1))(li)
-    # image generator input
+    # dataset generator input
     in_lat = Input(shape=(latent_dim,))
 
     n_nodes = 1 * features
@@ -110,7 +110,7 @@ def define_generator(X_train=None, y_train=None):
     gen = Dense(n_nodes)(in_lat)
     gen = LeakyReLU(alpha=0.2)(gen)
     gen = Reshape((features, 1))(gen)
-    # merge image gen and label input
+    # merge dataset gen and label input
     merge = Concatenate()([gen, li])
     gen = Conv1DTranspose(32, 4, padding='same')(merge)
     gen = LeakyReLU(alpha=0.2)(gen)
@@ -134,9 +134,9 @@ def define_gan(g_model, d_model, gan_config=None):
     d_model.trainable = False
     # get noise and label inputs from generator model
     gen_noise, gen_label = g_model.input
-    # get image output from the generator model
+    # get dataset output from the generator model
     gen_output = g_model.output
-    # connect image output and label input from generator as inputs to discriminator
+    # connect dataset output and label input from generator as inputs to discriminator
     gan_output = d_model([gen_output, gen_label])
     # define gan model as taking noise and label and outputting a classification
     model = Model([gen_noise, gen_label], gan_output)
@@ -163,10 +163,10 @@ def generate_fake_samples(generator, latent_dim, n_samples, n_classes=1):
     # generate points in latent space
     z_input, labels_input = generate_latent_points(latent_dim, n_samples, n_classes)
     # predict outputs
-    images = generator.predict([z_input, labels_input])
+    datasets = generator.predict([z_input, labels_input])
     # create class labels
     y = zeros((n_samples, 1))
-    return [images, labels_input], y
+    return [datasets, labels_input], y
 
 
 def data_selection(X_train=None, y_train=None, num_samples=10):
