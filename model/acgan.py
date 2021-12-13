@@ -1,4 +1,3 @@
-
 import numpy as np
 import os
 from numpy import expand_dims
@@ -24,6 +23,10 @@ from miscellaneous.misc import Misc
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+'''
+Based on: https://machinelearningmastery.com/how-to-develop-a-conditional-generative-adversarial-network-from-scratch/
+by: Jason Brownlee
+'''
 
 # define the standalone discriminator model
 def define_discriminator(X_train=None, y_train=None, discriminator_config=None):
@@ -83,7 +86,7 @@ def define_generator(X_train=None, y_train=None):
     # reshape to additional channel
     li = Reshape((features, 1))(li)
     # dataset generator input
-    in_lat = Input(shape=(latent_dim,))
+    in_lat = Input(shape=(latent_dimhttps://machinelearningmastery.com/how-to-develop-a-conditional-generative-adversarial-network-from-scratch/,))
 
     n_nodes = 1 * features
 

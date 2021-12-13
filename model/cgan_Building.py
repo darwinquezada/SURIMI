@@ -44,6 +44,11 @@ if gpu_available:
     print('Found GPU at: {}'.format(device_name))
 
 
+'''
+Based on: https://machinelearningmastery.com/how-to-develop-a-conditional-generative-adversarial-network-from-scratch/
+by: Jason Brownlee
+'''
+
 # define the standalone discriminator model
 def define_discriminator(X_train=None, y_train=None, discriminator_config=None):
     # label input

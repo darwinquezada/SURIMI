@@ -24,6 +24,10 @@ from miscellaneous.misc import Misc
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+'''
+Based on: https://machinelearningmastery.com/how-to-develop-a-conditional-generative-adversarial-network-from-scratch/
+by: Jason Brownlee
+'''
 
 # define the standalone discriminator model
 def define_discriminator(X_train=None, y_train=None, discriminator_config=None):
