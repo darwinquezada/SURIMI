@@ -9,23 +9,23 @@ import numpy as np
 
 def run_cnn_lstm(dataset_name=None, path_config=None, dataset_config=None, building_config=None, floor_config=None,
                  positioning_config=None, algorithm=None):
-    '''
-    This function run all the machine learning models CNN-LSTM for building classification, floor classification,
-    position prediction, and GAN
-    :param algorithm:
-    :param path_config:
-    :param dataset_name:
-    :param dataset:
-    :param dataset_config:
-    :param building_config:
-    :param floor_config:
-    :param positioning_config:
-    :param gan_full_config:
-    :param data_augmentation:
-    :return:
-    '''
+    """
+    Parameters
+    ----------
+    dataset_name : Dataset name
+    path_config : General paths set in the config file
+    dataset_config : Dataset parameters
+    building_config : Hyperparameters for the building model
+    floor_config : Hyperparameters for the floor model
+    positioning_config : Hyperparameters for the positioning model
+    algorithm : Type of algorithm
 
+    Returns
+    -------
+
+    """
     misc = Misc()
+    # Load dataset
     dataset_path = os.path.join(path_config['data_source'], dataset_name)
     if bool(dataset_config['train_dataset']):
         X_train, y_train = load(os.path.join(dataset_path, dataset_config['train_dataset']))
@@ -58,7 +58,10 @@ def run_cnn_lstm(dataset_name=None, path_config=None, dataset_config=None, build
                             path_config=path_config, building_config=building_config, floor_config=floor_config,
                             position_config=positioning_config, algorithm=algorithm)
 
+    # Train and Test
     prediction = cnn_lstm.train()
+
+    # Report results
     error_estimation(dataset_name, path_config, prediction, y_test, algorithm=algorithm)
 
     return True

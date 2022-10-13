@@ -2,8 +2,6 @@ import argparse
 import os
 from miscellaneous.misc import Misc
 from run_cgan import run_cgan
-from run_smote import run_smote
-from run_ros import run_ros
 from run_cnn_lstm import run_cnn_lstm
 
 
@@ -57,7 +55,7 @@ if __name__ == '__main__':
                         pass
                     else:
                         print(misc.log_msg("ERROR",
-                                           "Train Dataset not found."))
+                                           "Training set not found."))
                         exit(-1)
 
                     if os.path.exists(os.path.join(main_path, dataset,
@@ -66,7 +64,7 @@ if __name__ == '__main__':
                         pass
                     else:
                         print(misc.log_msg("ERROR",
-                                           "Test Dataset not found."))
+                                           "Test set not found."))
                         exit(-1)
 
                     if os.path.exists(os.path.join(main_path, dataset,
@@ -74,28 +72,20 @@ if __name__ == '__main__':
                         pass
                     else:
                         print(misc.log_msg("ERROR",
-                                           "Validation Dataset not found."))
+                                           "Validation set not found."))
                         exit(-1)
 
                     if algorithm == 'CNN-LSTM':
                         run_cnn_lstm(dataset_name=dataset, path_config=config['path'], dataset_config=config['dataset'][j],
                                      building_config=config['model_config'][0], floor_config=config['model_config'][1],
                                      positioning_config=config['model_config'][2], algorithm=algorithm)
-                    elif algorithm == 'SMOTE':
-                        run_smote(dataset_name=dataset, path_config=config['path'], dataset_config=config['dataset'][j],
-                                  building_config=config['model_config'][0], floor_config=config['model_config'][1],
-                                  positioning_config=config['model_config'][2], algorithm=algorithm)
-                    elif algorithm == 'ROS':
-                        run_ros(dataset_name=dataset, path_config=config['path'], dataset_config=config['dataset'][j],
-                                building_config=config['model_config'][0], floor_config=config['model_config'][1],
-                                positioning_config=config['model_config'][2], algorithm=algorithm)
                     else:
                         if method != "":
                             if method in ['FLOOR', 'BUILDING', 'FULL-DB']:
                                 pass
                             else:
                                 print(misc.log_msg("ERROR",
-                                                   "Method not available. Accepted training methods "
+                                                   "Oops this method is not available. The available methods are: "
                                                    "{FLOOR|BUILDING|FULL-DB}"))
                                 exit(-1)
                         else:
@@ -111,21 +101,13 @@ if __name__ == '__main__':
                 run_cnn_lstm(dataset_name=dataset_name, path_config=config['path'], dataset_config=dataset,
                              building_config=config['model_config'][0], floor_config=config['model_config'][1],
                              positioning_config=config['model_config'][2], algorithm=algorithm)
-            elif algorithm == 'SMOTE':
-                run_smote(dataset_name=dataset_name, path_config=config['path'], dataset_config=dataset,
-                          building_config=config['model_config'][0], floor_config=config['model_config'][1],
-                          positioning_config=config['model_config'][2], algorithm=algorithm)
-            elif algorithm == 'ROS':
-                run_ros(dataset_name=dataset_name, path_config=config['path'], dataset_config=dataset,
-                        building_config=config['model_config'][0], floor_config=config['model_config'][1],
-                        positioning_config=config['model_config'][2], algorithm=algorithm)
             else:
                 if method != "":
                     if method in ['FLOOR', 'BUILDING', 'FULL-DB']:
                         pass
                     else:
                         print(misc.log_msg("ERROR",
-                                           "Method not available. Accepted training methods "
+                                           "Oops this method is not available. The available methods are: "
                                            "{FLOOR|BUILDING|FULL-DB}"))
                         exit(-1)
                 else:

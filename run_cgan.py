@@ -3,20 +3,10 @@ from preprocessing.data_representation import DataRepresentation
 from model.cnn_lstm import CNN_LSTM
 from miscellaneous.misc import Misc
 from miscellaneous.error_estimation import error_estimation
-# from miscellaneous.data_augmentation import data_augmentation
 from miscellaneous.fingerprints_generation import generation
-# from miscellaneous.ips_data_augmentation import data_augmentation
-# from model.cgan import train_imbalance_classes
-
 from model.cgan_full_db import train_imbalance_classes
 from model.cgan_Building import train_imbalance_classes_building
 from model.cgan_Floor import train_imbalance_classes_floor
-# from model.ips_cgan import train_imbalance_classes
-# from model.acgan import train_imbalance_classes
-# from model.cgan import train_imbalance_classes
-from keras.models import load_model
-import joblib
-import shutil
 import os
 import numpy as np
 import pandas as pd
@@ -25,24 +15,28 @@ import pandas as pd
 def run_cgan(dataset_name=None, path_config=None, dataset_config=None, building_config=None, floor_config=None,
              positioning_config=None, gan_general_config=None, data_augmentation=None, algorithm=None,
              method=None):
-    '''
-    This function run all the machine learning models CNN-LSTM for building classification, floor classification,
-    position prediction, and GAN
-    :param algorithm:
-    :param gan_general_config:
-    :param path_config:
-    :param dataset_name:
-    :param dataset:
-    :param dataset_config:
-    :param building_config:
-    :param floor_config:
-    :param positioning_config:
-    :param gan_full_config:
-    :param data_augmentation:
-    :return:
-    '''
+    """
+
+    Parameters
+    ----------
+    dataset_name : Dataset name
+    path_config : General paths set in the config file
+    dataset_config : Dataset configuration
+    building_config : Hyperparameters for the building model
+    floor_config : Hyperparameters for the floor model
+    positioning_config : Hyperparameters for the positioning model
+    gan_general_config : Hyperparameters for the cGAN model
+    data_augmentation : Data augmentatio parameters set in the config file
+    algorithm: Algorithm to be used, for now CGAN
+    method: Method to be used to train the GAN model (FLOOR, BUILDING, FULL_DB)
+
+    Returns
+    -------
+
+    """
 
     misc = Misc()
+    # Load datasets
     dataset_path = os.path.join(path_config['data_source'], dataset_name)
     if bool(dataset_config['train_dataset']):
         X_train, y_train = load(os.path.join(dataset_path, dataset_config['train_dataset']))
@@ -88,12 +82,14 @@ def run_cgan(dataset_name=None, path_config=None, dataset_config=None, building_
 
     # Train GAN architecture
     if gan_general_config['train'].upper() == 'TRUE':
+        # Train the model by floor
         if method == 'FLOOR':
             train_imbalance_classes_floor(X_train, y_train, dataset_config=dataset_config,
                                           discriminator_config=discriminator_config,
                                           gan_general_config=gan_general_config, gan_config=gan_config,
                                           path_config=path_config,
                                           algorithm=algorithm, method=method)
+        # Train the model by building
         elif method == 'BUILDING':
             train_imbalance_classes_building(X_train, y_train, dataset_config=dataset_config,
                                              discriminator_config=discriminator_config,
@@ -101,6 +97,7 @@ def run_cgan(dataset_name=None, path_config=None, dataset_config=None, building_
                                              path_config=path_config,
                                              algorithm=algorithm, method=method)
         else:
+            # Train the model using the full dataset
             method = 'FULL-DB'
             train_imbalance_classes(X_train, y_train, dataset_config=dataset_config,
                                     discriminator_config=discriminator_config,
@@ -108,6 +105,7 @@ def run_cgan(dataset_name=None, path_config=None, dataset_config=None, building_
                                     path_config=path_config,
                                     algorithm=algorithm, method=method)
 
+    # Generate new fingerprints ("synthetic fingerprints")
     if gan_general_config['generate_fp'].upper() == 'TRUE':
         X_train_new, y_train_new = generation(dataset_name=dataset_name, dataset_config=dataset_config,
                                               path_config=path_config, gan_general_config=gan_general_config,
@@ -127,13 +125,14 @@ def run_cgan(dataset_name=None, path_config=None, dataset_config=None, building_
             print(misc.log_msg('ERROR', 'Error. Please, train the model first.'))
             exit(-1)
 
-    # Concatenate new FP and training dat
+    # Concatenate synthetic fingerprints and original fingerprints in the training set
     X_train = np.concatenate((X_train, X_train_new.iloc[:, 0:np.shape(X_train)[1]].values), axis=0)
     y_train = y_train.append(y_train_new)
 
-    # Training Model
+
     prediction_path = os.path.join(path_config['results'], dataset_config['name'], algorithm, method, conf_augment)
 
+    # Training the CNN-LSTM Model
     if building_config['train'].upper() == 'TRUE' or floor_config['train'].upper() == 'TRUE' or \
             positioning_config['train'].upper() == 'TRUE':
 
@@ -164,7 +163,7 @@ def run_cgan(dataset_name=None, path_config=None, dataset_config=None, building_
             print(misc.log_msg('ERROR',
                                'Error. Please, train the positioning model first (position, floor and building).'))
             exit(-1)
-
+    # Report results
     error_estimation(database_name=dataset_name, path_config=path_config, prediction=prediction, test=y_test,
                      algorithm=algorithm, conf_augment=conf_augment, method=method)
 

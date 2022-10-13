@@ -73,6 +73,7 @@ class Misc:
         return list_datasets
 
     def optimizer(self, opt, lr):
+        # Optimizers used with the models
         if opt == 'Adam':
             return Adam(lr)
         elif opt == 'Adamax':

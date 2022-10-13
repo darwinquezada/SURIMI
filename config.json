@@ -1,297 +1,206 @@
 {
-  "__comment": "All the datasets have to be inside of dataset/{dataset_name}/.",
-  "path":{
-    "data_source": "dataset",
-    "saved_model": "saved_model",
-    "plot": "plots",
-    "results": "results"
-  },
-  "dataset": [
-    {
-      "name": "DSI1",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
+    "__comment": "All the datasets have to be inside of dataset/{dataset_name}/.",
+    "path": {
+        "data_source": "datasets",
+        "saved_model": "saved_model",
+        "plot": "plots",
+        "results": "results"
     },
-    {
-      "name": "DSI2",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "LIB1",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "LIB2",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "MAN1",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "MAN2",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "SIM01",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "TUT1",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "TUT2",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "TUT3",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "TUT4",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "TUT5",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "TUT6",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "TUT7",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "UJI1",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "UJI2",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "UJI",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": "Validation.csv"
-    },
-    {
-      "name": "TAMPERE",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "UTS1",
-      "data_representation": "powed",
-      "default_null_value": 100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "UEXB1",
-      "data_representation": "powed",
-      "default_null_value": -100,
-      "train_dataset": "UEXB1-Train.csv",
-      "test_dataset": "UEXB1-Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "UEXB2",
-      "data_representation": "powed",
-      "default_null_value": -100,
-      "train_dataset": "UEXB2-Train.csv",
-      "test_dataset": "UEXB2-Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "UJIB1",
-      "data_representation": "powed",
-      "default_null_value": -100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "UJIB2",
-      "data_representation": "powed",
-      "default_null_value": -100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "OFIN1",
-      "data_representation": "powed",
-      "default_null_value": -100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "OFINB1",
-      "data_representation": "powed",
-      "default_null_value": -100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "OFINB2",
-      "data_representation": "powed",
-      "default_null_value": -100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "OFINB3",
-      "data_representation": "powed",
-      "default_null_value": -100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    },
-    {
-      "name": "OFINB4",
-      "data_representation": "powed",
-      "default_null_value": -100,
-      "train_dataset": "Train.csv",
-      "test_dataset": "Test.csv",
-      "validation_dataset": ""
-    }
-  ],
-  "model_config": [
-    {
-      "model": "building",
-      "train": "True",
-      "lr": 0.0003,
-      "epochs": 50,
-      "batch_size":128,
-      "loss": "mse",
-      "optimizer": "Adam"
-    },
-    {
-      "model": "Floor",
-      "train": "True",
-      "lr": 0.0005,
-      "epochs": 100,
-      "batch_size": 256,
-      "loss": "mse",
-      "optimizer": "Adam"
-    },
-    {
-      "model": "positioning",
-      "train": "True",
-      "lr": 0.0005,
-      "epochs": 100,
-      "batch_size": 256,
-      "loss": "mse",
-      "optimizer": "Adam"
-    },
-    {
-      "model": "gan",
-      "train": "False",
-      "generate_fp": "True",
-      "epochs": 14,
-      "batch_size": 64,
-      "num_fake_samples": 200,
-      "gan":{
-        "model":[
-          {
-            "model": "discriminator",
-            "loss": "binary_crossentropy",
-            "optimizer": "Adam",
-            "lr": 0.0002
-          },
-          {
-            "model": "generator"
-          },
-          {
+    "dataset": [{
+            "name": "DSI1",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "DSI2",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "LIB1",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "LIB2",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "MAN1",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "MAN2",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "TUT1",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "TUT2",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "TUT3",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "TUT4",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "TUT5",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "TUT6",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "TUT7",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "UJI1",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "UJI2",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": ""
+        },
+        {
+            "name": "UJIB1",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": "Validation.csv"
+        },
+        {
+            "name": "UJIB2",
+            "data_representation": "powed",
+            "default_null_value": 100,
+            "train_dataset": "Train.csv",
+            "test_dataset": "Test.csv",
+            "validation_dataset": "Validation.csv"
+        }
+    ],
+    "model_config": [{
+            "model": "building",
+            "train": "True",
+            "lr": 0.0005,
+            "epochs": 100,
+            "batch_size": 100,
+            "loss": "mse",
+            "optimizer": "Adam"
+        },
+        {
+            "model": "Floor",
+            "train": "True",
+            "lr": 0.0001,
+            "epochs": 100,
+            "batch_size": 100,
+            "loss": "mse",
+            "optimizer": "Adam"
+        },
+        {
+            "model": "positioning",
+            "train": "True",
+            "lr": 0.0005,
+            "epochs": 100,
+            "batch_size": 256,
+            "loss": "mse",
+            "optimizer": "Adam"
+        },
+        {
             "model": "gan",
-            "loss": "binary_crossentropy",
-            "optimizer": "Adam",
-            "lr": 0.0002
-          }
-        ]
-      }
-    }
-  ],
-  "data_augmentation": {
-    "distance_rsamples": [1,2,3,4,5],
-    "iterations": 20,
-    "num_samples": 200
-  },
-  "gpu": "False"
+            "train": "True",
+            "generate_fp": "True",
+            "epochs": 14,
+            "batch_size": 64,
+            "num_fake_samples": 200,
+            "gan": {
+                "model": [{
+                        "model": "discriminator",
+                        "loss": "binary_crossentropy",
+                        "optimizer": "Adam",
+                        "lr": 0.0002
+                    },
+                    {
+                        "model": "generator"
+                    },
+                    {
+                        "model": "gan",
+                        "loss": "binary_crossentropy",
+                        "optimizer": "Adam",
+                        "lr": 0.0002
+                    }
+                ]
+            }
+        }
+    ],
+    "data_augmentation": {
+        "distance_rsamples": [1, 2, 3, 4, 5],
+        "iterations": 10,
+        "num_samples": 100
+    },
+    "gpu": "False"
 }

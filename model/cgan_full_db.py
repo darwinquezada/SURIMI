@@ -46,40 +46,29 @@ if gpu_available:
 Based on: https://machinelearningmastery.com/how-to-develop-a-conditional-generative-adversarial-network-from-scratch/
 by: Jason Brownlee
 '''
-
-# define the standalone discriminator model
+# GAN discriminator
 def define_discriminator(X_train=None, y_train=None, discriminator_config=None):
     # label input
     in_shape = (np.shape(X_train)[1], 1)
-    n_classes = int(max(y_train)+1)
+    n_classes = int(max(y_train) + 1)
     in_label = Input(shape=(1,))
-
-    # embedding for categorical input
     li = Embedding(n_classes, 50)(in_label)
-    # scale up to dataset dimensions with linear activation
     n_nodes = in_shape[0] * in_shape[1]
     li = Dense(n_nodes)(li)
-    # reshape to additional channel
     li = Reshape((in_shape[0], 1))(li)
-    # Hasta aquí tengo el input (None, 520, 1)
     in_dataset = Input(shape=in_shape)
     merge = Concatenate()([in_dataset, li])
     fe = Conv1D(filters=32, kernel_size=4)(merge)
     fe = LeakyReLU(alpha=0.2)(fe)
-    # fe = Dropout(0.5)(fe)
     fe = Conv1D(64, kernel_size=4)(fe)
     fe = LeakyReLU(alpha=0.2)(fe)
-    # fe = Dropout(0.5)(fe)
     fe = Conv1D(128, kernel_size=4)(fe)
     fe = LeakyReLU(alpha=0.2)(fe)
-    # fe = Dropout(0.5)(fe)
     fe = Conv1D(256, kernel_size=4)(fe)
     fe = LeakyReLU(alpha=0.2)(fe)
     fe = Conv1D(512, kernel_size=4)(fe)
     fe = LeakyReLU(alpha=0.2)(fe)
-    # fe = Dropout(0.5)(fe)
     fe = Flatten()(fe)
-    # dropout
     fe = Dropout(0.4)(fe)
 
     output = Dense(1, activation='sigmoid')(fe)
@@ -90,8 +79,7 @@ def define_discriminator(X_train=None, y_train=None, discriminator_config=None):
     model.compile(loss=discriminator_config['loss'], optimizer=optimizer, metrics=['accuracy'])
     return model
 
-
-# define the standalone generator model
+# GAN - Generator
 def define_generator(X_train=None, y_train=None):
     # label input
     latent_dim = np.shape(X_train)[1]
@@ -99,14 +87,10 @@ def define_generator(X_train=None, y_train=None):
     n_classes = int(max(y_train) + 1)
 
     in_label = Input(shape=(1,))
-    # embedding for categorical input
     li = Embedding(n_classes, 50)(in_label)
-    # linear multiplication
     n_nodes = 1 * features
     li = Dense(n_nodes)(li)
-    # reshape to additional channel
     li = Reshape((features, 1))(li)
-    # dataset generator input
     in_lat = Input(shape=(latent_dim,))
 
     n_nodes = 1 * features
@@ -114,74 +98,50 @@ def define_generator(X_train=None, y_train=None):
     gen = Dense(n_nodes)(in_lat)
     gen = LeakyReLU(alpha=0.2)(gen)
     gen = Reshape((features, 1))(gen)
-    # merge dataset gen and label input
     merge = Concatenate()([gen, li])
     gen = Conv1DTranspose(32, 4, padding='same')(merge)
     gen = LeakyReLU(alpha=0.2)(gen)
-    # gen = Dropout(0.5)(gen)
     gen = Conv1DTranspose(64, 4, padding='same')(gen)
     gen = LeakyReLU(alpha=0.2)(gen)
-    # gen = Dropout(0.5)(gen)
     gen = Conv1DTranspose(128, 4, padding='same')(gen)
     gen = LeakyReLU(alpha=0.2)(gen)
-    # gen = Dropout(0.5)(gen)
-    # output
     out_layer = Conv1DTranspose(1, 1, activation='tanh', padding='same')(gen)
-    # define model
     model = Model([in_lat, in_label], out_layer)
     return model
 
-
-# define the combined generator and discriminator model, for updating the generator
+# Building the gan model
 def define_gan(g_model, d_model, gan_config=None):
-    # make weights in the discriminator not trainable
     d_model.trainable = False
-    # get noise and label inputs from generator model
     gen_noise, gen_label = g_model.input
-    # get dataset output from the generator model
     gen_output = g_model.output
-    # connect dataset output and label input from generator as inputs to discriminator
     gan_output = d_model([gen_output, gen_label])
-    # define gan model as taking noise and label and outputting a classification
     model = Model([gen_noise, gen_label], gan_output)
-    # compile model
     misc = Misc()
     optimizer = misc.optimizer(gan_config['optimizer'], gan_config['lr'])
     model.compile(loss=gan_config['loss'], optimizer=optimizer)
     return model
 
-
-# generate points in latent space as input for the generator
+# Latent points generator
 def generate_latent_points(latent_dim, n_samples, n_classes=1):
-    # generate points in the latent space
     x_input = randn(latent_dim * n_samples)
-    # reshape into a batch of inputs for the network
     z_input = x_input.reshape(n_samples, latent_dim)
-    # generate labels
     labels = randint(0, n_classes, n_samples)
     return [z_input, labels]
 
-
-# use the generator to generate n fake examples, with class labels
+# Generating fake samples
 def generate_fake_samples(generator, latent_dim, n_samples, n_classes=1):
-    # generate points in latent space
     z_input, labels_input = generate_latent_points(latent_dim, n_samples, n_classes)
-    # predict outputs
     datasets = generator.predict([z_input, labels_input])
-    # create class labels
     y = zeros((n_samples, 1))
     return [datasets, labels_input], y
 
 
 def data_selection(X_train=None, y_train=None, num_samples=10):
     ix = randint(0, X_train.shape[0], num_samples)
-    # select fingerprints and labels
     X_train = X_train[ix, :]
     y_train = y_train[ix]
-    # generate class labels
     y = ones((num_samples, 1))
     return X_train, y_train, y
-
 
 # train the generator and discriminator
 def train(X_train, y_train, iteration, g_model, d_model, gan_model, dataset_config=None, gan_general_config=None,
@@ -202,35 +162,21 @@ def train(X_train, y_train, iteration, g_model, d_model, gan_model, dataset_conf
             os.makedirs(main_path_save)
         iteration = str(iteration)
 
-        # manually enumerate epochs
         for i in range(n_epochs):
-            # enumerate batches over the training set
             for j in range(bat_per_epo):
-                # get randomly selected 'real' samples
                 X_real, labels_real, y_real = data_selection(X_train=X_train, y_train=y_train,
                                                              num_samples=half_batch)
-                # X_real = X_train
-                # labels_real = y_train
+                
                 n_classes = max(y_train) + 1
-                # y_real = np.ones(np.size(labels_real))
-
-                # update discriminator model weights
                 d_loss1, _ = d_model.train_on_batch([X_real, labels_real], y_real)
-                # generate 'fake' examples
                 [X_fake, labels], y_fake = generate_fake_samples(g_model, latent_dim, half_batch, n_classes)
-                # update discriminator model weights
                 d_loss2, _ = d_model.train_on_batch([X_fake, labels], y_fake)
-                # prepare points in latent space as input for the generator
                 [z_input, labels_input] = generate_latent_points(latent_dim, n_batch, n_classes)
-                # create inverted labels for the fake samples
                 y_gan = ones((n_batch, 1))
-                # update the generator via the discriminator's error
                 g_loss = gan_model.train_on_batch([z_input, labels_input], y_gan)
-                # summarize loss on this batch
                 print('>Epoch: %d, Batch epoch %d/%d, Discriminator real - Loss %.4f, '
                       'Discriminator fake loss %.4f, GAN loss %.4f' %
                       (i + 1, j + 1, bat_per_epo, d_loss1, d_loss2, g_loss))
-                # print("Epoch {:.1f}, accuracy real {:.3f}, accuracy fake {:.3f}".format(i, acc_real, acc_fake))
 
         g_model.save(main_path_save + '/cgan_generator_full_db_' + str(gan_general_config['epochs']) + '_' +
                      str(gan_general_config['batch_size']) + '.h5')

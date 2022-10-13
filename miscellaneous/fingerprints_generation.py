@@ -15,6 +15,17 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
 def generate_latent_points(latent_dim, n_samples, n_classes=10):
+    """
+    Parameters
+    ----------
+    latent_dim : Latent dimension
+    n_samples : Number of samples to generate
+    n_classes : Number of classes
+
+    Returns
+    -------
+    latent points
+    """
     # generate points in the latent space
     x_input = randn(latent_dim * n_samples)
     # reshape into a batch of inputs for the network
@@ -26,6 +37,22 @@ def generate_latent_points(latent_dim, n_samples, n_classes=10):
 
 def generation(dataset_name=None, dataset_config=None, path_config=None, gan_general_config=None,
                data_augmentation=None, algorithm=None, method=None):
+    """
+
+    Parameters
+    ----------
+    dataset_name: Dataset name
+    dataset_config: Dataset config (see the config file)
+    path_config: General paths set in the config file
+    gan_general_config: cGAN hyperparameters
+    data_augmentation : Data augmentation parameters
+    algorithm : Algorithm used
+    method : Method used to train the cGAN
+
+    Returns
+    -------
+
+    """
     source_path = os.path.join(path_config['data_source'], dataset_name)
     saved_model_path = os.path.join(path_config['saved_model'], dataset_name, 'CNN-LSTM')
 
@@ -96,7 +123,7 @@ def generation(dataset_name=None, dataset_config=None, path_config=None, gan_gen
                 X_reshaped = np.reshape(X, (gan_general_config["num_fake_samples"], np.shape(X_train)[1]))
                 fake_fingerprints = pd.DataFrame(X_reshaped)
 
-                # Predict position, floor and building
+                # Reshape the synthetic fingerprints dimensions
                 if np.shape(fake_fingerprints)[1] % 2 != 0:
                     fake_fingerprints = np.append(fake_fingerprints.values,
                                                   np.zeros((np.shape(fake_fingerprints)[0], 1)), axis=1)
@@ -109,6 +136,7 @@ def generation(dataset_name=None, dataset_config=None, path_config=None, gan_gen
                 X_train_series_sub_nd = X_train_series_nd.reshape(
                     (X_train_series_nd.shape[0], subsequences, timesteps, 1))
 
+                # Predict the position, floor and building of the synthetic fingerprints
                 position = position_model.predict(X_train_series_sub_nd)
                 floor = np.argmax(floor_model.predict(X_train_series_sub_nd), axis=-1)
                 building = np.argmax(building_model.predict(X_train_series_sub_nd), axis=-1)
@@ -125,9 +153,10 @@ def generation(dataset_name=None, dataset_config=None, path_config=None, gan_gen
                 altitude = np.reshape(predict_alt[:], (1, len(predict_alt[:, 0])))
 
                 # Select realistic fingerprints
-
                 uni_pred_buildings = np.unique(building)
 
+                # Selecting synthetic fingerprints
+                # This can be done in a few lines, let's check later ...
                 for bld in uni_pred_buildings:
                     bld_segment_y_train = y_train[y_train['BUILDINGID'] == int(bld)].reset_index(drop=True).copy()
 
@@ -155,6 +184,7 @@ def generation(dataset_name=None, dataset_config=None, path_config=None, gan_gen
                         flr_fake_fp = bld_fake_fp.loc[idx_flr[0], :].copy().reset_index(drop=True)
 
                         # Select realistic fingerprints
+                        # I have to reduce the code here
                         distance_matrix = np.zeros((np.shape(sel_y_train)[0], len(flr_sel_bld)))
 
                         for tr in range(0, (np.shape(distance_matrix)[0]) - 1):
@@ -165,23 +195,27 @@ def generation(dataset_name=None, dataset_config=None, path_config=None, gan_gen
                                     np.square(flr_sel_alt[pr] - sel_y_train['ALTITUDE'].iloc[tr])
                                 ))
                                 alti_error = np.sqrt(np.square(flr_sel_alt[pr] - sel_y_train['ALTITUDE'].iloc[tr]))
-                                if alti_error > 0.2:
+                                if alti_error > 0.1:
                                     distance_matrix[tr, pr] = 1000000
 
                         distance_df = pd.DataFrame(distance_matrix)
-                        filter = ((distance_df < dis) & (distance_df > 0)).any()
-                        sub_df = distance_df.loc[:, filter]
+                        filter = ((distance_df <= dis) & (distance_df > 0)).any()
+                        sub_df = [i for i, x in enumerate(filter) if x]
 
-                        new_data = list(zip(flr_sel_lon[[sub_df.columns]], flr_sel_lat[[sub_df.columns]],
-                                            flr_sel_alt[[sub_df.columns]], flr_sel_flr[[sub_df.columns]],
-                                            flr_sel_bld[[sub_df.columns]]))
+                        if sub_df:
+                            longitude_sele = flr_sel_lon[sub_df].reshape(-1, 1)
+                            latitude_sele = flr_sel_lat[sub_df].reshape(-1, 1)
+                            laltitude_sele = flr_sel_alt[sub_df].reshape(-1, 1)
+                            floor_sele = flr_sel_flr[sub_df].reshape(-1, 1)
+                            bilding_sele = flr_sel_bld[sub_df].reshape(-1, 1)
 
-                        df_new_fake_labels = df_new_fake_labels.append(new_data, ignore_index=True)
-                        # Features X_train_new_data
+                            new_data = pd.DataFrame(np.hstack([longitude_sele, latitude_sele, laltitude_sele, floor_sele, bilding_sele]))
 
-                        df_new_fake_fingerprints = df_new_fake_fingerprints.append(flr_fake_fp.loc[filter, :],
-                                                                                   ignore_index=True)
+                            df_new_fake_labels = df_new_fake_labels.append(new_data, ignore_index=True)
+                            # Features X_train_new_data
 
+                            df_new_fake_fingerprints = df_new_fake_fingerprints.append(flr_fake_fp.loc[filter, :],
+                                                                                    ignore_index=True)
 
             # Save new data
             df_full_augmented_y_train = df_full_augmented_y_train.append(df_new_fake_labels, ignore_index=True)
@@ -189,9 +223,8 @@ def generation(dataset_name=None, dataset_config=None, path_config=None, gan_gen
 
     os.chdir('../../../../../')
 
-    if np.shape(df_full_augmented_y_train)[0] > 0:
-        print(">Samples: %d" %
-              (np.shape(df_full_augmented_y_train)[0]))
+    if np.shape(df_full_augmented_y_train)[0] >= 0:
+        print(">Samples: %d" % (np.shape(df_full_augmented_y_train)[0]))
 
         saved_new_fp = os.path.join(path_config['saved_model'], dataset_name, algorithm)
         string_dist = [str(dist) for dist in data_augmentation['distance_rsamples']]
@@ -207,7 +240,7 @@ def generation(dataset_name=None, dataset_config=None, path_config=None, gan_gen
         print("Shape New Fingerprints")
         print(np.shape(df_full_augmented_y_train))
     else:
-        print(misc.log_msg("ERROR", "Oops, something went wrong, no fake fingerprints."))
+        print(misc.log_msg("ERROR", "Oops, something went wrong. We couldn't generate new synthetic fingerprints."))
         exit(-1)
 
     return df_full_augmented_x_train, df_full_augmented_y_train

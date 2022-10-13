@@ -5,11 +5,26 @@ import logging
 from sklearn.metrics import confusion_matrix
 from miscellaneous.plot_confusion_matrix import plot_confusion_matrix
 from miscellaneous.misc import Misc
-
+from datetime import datetime
 
 def error_estimation(database_name=None, path_config=None, prediction=None, test=None, algorithm=None, **kwargs):
+    """
 
+    Parameters
+    ----------
+    database_name : Database name
+    path_config : General paths set in the config file
+    prediction: Results obtained from the CNN-LSTM (regression and classification results)
+    test : Test set
+    algorithm: Algorithms used
+    kwargs
+
+    Returns : Results of the position estimation
+    -------
+
+    """
     misc = Misc()
+    # This can be done in one line (check later ...)
     lati_error = np.mean(np.sqrt(np.square(prediction['LATITUDE'].values[:] - test['LATITUDE'].values[:])))
     long_error = np.mean(np.sqrt(np.square(prediction['LONGITUDE'].values[:] - test['LONGITUDE'].values[:])))
     alti_error = np.mean(np.sqrt(np.square(prediction['ALTITUDE'].values[:] - test['ALTITUDE'].values[:])))
@@ -32,26 +47,24 @@ def error_estimation(database_name=None, path_config=None, prediction=None, test
     if not os.path.exists(prediction_path):
         os.makedirs(prediction_path)
 
+    # Save results in a log file
+    if not os.path.exists(prediction_path):
+        os.makedirs(prediction_path)
+
     datestr = "%m/%d/%Y %I:%M:%S %p"
     logging.basicConfig(
-        filename=prediction_path + '/results.log',
+        filename=prediction_path + '/' + datetime.now().strftime('results_%Y_%m_%d_%H_%M_%S.log'),
         level=logging.INFO,
         filemode="w",
         datefmt=datestr,
     )
     # CM plot
     cmb = confusion_matrix(y_true=test['BUILDINGID'].values[:], y_pred=prediction['BUILDING'].values[:])
-    #labels = np.unique(test['BUILDINGID'].values[:])
-    #plot_confusion_matrix(cm=cmb, normalize=False, target_names=labels, title="Prediction Building",
-    #                      title_figure="CM")
 
     test_floor = test.round({'FLOOR': 2})
     prediction_floor = prediction.round({'FLOOR': 2})
 
     cmf = confusion_matrix(y_true=test_floor['FLOOR'].values[:], y_pred=prediction_floor['FLOOR'].values[:])
-    #labels = np.unique(test['FLOOR'].values[:])
-    #plot_confusion_matrix(cm=cmf, normalize=False, target_names=labels, title="Prediction Floor",
-    #                      title_figure="CM")
 
     accuracy_building = (np.trace(cmb) / float(np.sum(cmb)))*100
     accuracy_floor = (np.trace(cmf) / float(np.sum(cmf)))*100
