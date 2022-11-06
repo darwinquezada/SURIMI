@@ -87,7 +87,7 @@ The datasets can be downloaded either from authors' repository (see README file 
 ## Converting datasets from .mat to .csv
 1.- Copy the original datasets (.mat) into **original_datasets** folder.
 
-2.- Modify the list of datasets in the /miscellaneous/datasets_mat_to_csv.py (line 23) with the dataset to be converted to csv.
+2.- Modify the list of datasets in the /miscellaneous/datasets_mat_to_csv.py file (line 23) with the dataset or datasets to be converted to csv.
 ```py
 list_datasets = [ 'DSI1', 'DSI2', 'LIB1', 'LIB2', 'MAN1', 'MAN2', 'TUT1', 'TUT2', 'TUT3', 'TUT4', 'TUT5', 'TUT6', 'TUT7','UJI1','UTS1', 'UJIB1', 'UJIB2']
 ```
@@ -104,7 +104,7 @@ The new datasets have to be added to the config file:
   "data_representation": "powed",
   "default_null_value": <default null value>,
   "train_dataset": "<Training set name>",
-  "test_dataset": "<Trest set name>",
+  "test_dataset": "<Test set name>",
   "validation_dataset": "<Validation set name>"
 },
 ```
@@ -122,7 +122,7 @@ For instance:
 
 ## Datasets structure
 The structure of the datasets is:
-* AP1, AP2, AP2, ..., APn, LONGITUDE, LATITUDE, ALTITUDE, FLOOR, BUILDINGID
+* AP1, AP2, AP3, ..., APn, LONGITUDE, LATITUDE, ALTITUDE, FLOOR, BUILDINGID
 
 Training and test sets have the same structure.
 
@@ -130,7 +130,7 @@ Training and test sets have the same structure.
 General parameters:
   * --config-file : Datasets and model's configuration (see config.json)
   * -- dataset : Dataset or datasets to be tested (i.e., UJI1 or UJI1,UJI2,TUT1)
-  * -- algorithm : CNN-LSTM, CGAN
+  * -- algorithm : {CNN-LSTM|CGAN}
   * -- method : methods availables (e.g., FLOOR, BUILDING, FULL-DB)
 
 1. **Training the CNN-LSTM model**
