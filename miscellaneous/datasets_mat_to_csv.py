@@ -28,7 +28,7 @@ for i in range(0,(len(list_datasets))):
     path_csv_datasets = os.path.join(target_path , dataset)
 
     if not os.path.exists(path_csv_datasets):
-        os.mkdir(path_csv_datasets)
+        os.makedirs(path_csv_datasets)
 
     mat = sci.loadmat( os.path.join(source_path, dataset+".mat"))
     trainingMacs = mat['database']['trainingMacs'].item()
